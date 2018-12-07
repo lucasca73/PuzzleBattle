@@ -1,12 +1,6 @@
-
-env:
-  global:
-    # include $HOME/.local/bin for `aws`
-    - PATH=$HOME/.local/bin:$PATH
-
 jobs:
   include:
-    - stage: build
+    - stage: deploy
       language: objective-c
       osx_image: xcode8.3
       if: branch = master
@@ -14,23 +8,15 @@ jobs:
         - '2.2'
 
       before_install:
-        - /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-        - brew install awscli
-        # - pip install --user awscli
-        - mkdir -p ~/$TRAVIS_BUILD_NUMBER
-        - aws s3 sync s3://travis-build-stages-shared-storage-test/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
-        - chmod a+x ./.Scripts/install.sh
         - chmod a+x ./.Scripts/build.sh
+        - chmod a+x ./.Scripts/install.sh
+        - chmod a+x ./.Scripts/install-butler.sh
         
       install:
         - ./.Scripts/install.sh
+        - ./.Scripts/install-butler.sh
       script:
         - ./.Scripts/build.sh
-
-    - stage: publish
-      if: branch = master
-      image: python:3
-      script: 
-        - echo Hello
-      after_success:
-        - aws s3 rm --recursive s3://travis-build-stages-shared-storage-test/$TRAVIS_BUILD_NUMBER # clean up after ourselves
+        - ./butler push /Build/linux lucascosta/puzzlebattle:linux-stable
+        - ./butler push /Build/osx lucascosta/puzzlebattle:osx-stable
+        - ./butler push /Build/windows lucascosta/puzzlebattle:win-stable
