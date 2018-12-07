@@ -10,3 +10,4 @@ unzip butler.zip
 chmod +x butler
 # just a sanity check run (and also helpful in case you're sharing CI logs)
 ./butler -V
+./butler login
