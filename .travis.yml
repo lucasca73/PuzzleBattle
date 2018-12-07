@@ -1,17 +1,34 @@
-language: objective-c
-osx_image: xcode8.3
 
-if: branch = master
+env:
+  global:
+    # include $HOME/.local/bin for `aws`
+    - PATH=$HOME/.local/bin:$PATH
 
-rvm:
-  - '2.2'
+jobs:
+  include:
+    - stage: build
+      language: objective-c
+      osx_image: xcode8.3
+      if: branch = master
+      rvm:
+        - '2.2'
 
-before_install:
-  - chmod a+x ./Scripts/install.sh
-  - chmod a+x ./Scripts/build.sh
+      before_install:
+        - pip install --user awscli
+        - mkdir -p ~/$TRAVIS_BUILD_NUMBER
+        - aws s3 sync s3://travis-build-stages-shared-storage-test/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+        - chmod a+x ./.Scripts/install.sh
+        - chmod a+x ./.Scripts/build.sh
+        
+      install:
+        - ./.Scripts/install.sh
+      script:
+        - ./.Scripts/build.sh
 
-install:
-  - ./Scripts/install.sh
-
-script:
-  - ./Scripts/build.sh
+    - stage: publish
+      if: branch = master
+      image: python:3
+      script: 
+        - echo Hello
+      after_success:
+        - aws s3 rm --recursive s3://travis-build-stages-shared-storage-test/$TRAVIS_BUILD_NUMBER # clean up after ourselves
