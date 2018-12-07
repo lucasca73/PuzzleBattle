@@ -14,7 +14,9 @@ jobs:
         - '2.2'
 
       before_install:
-        - pip install --user awscli
+        - /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        - brew install awscli
+        # - pip install --user awscli
         - mkdir -p ~/$TRAVIS_BUILD_NUMBER
         - aws s3 sync s3://travis-build-stages-shared-storage-test/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
         - chmod a+x ./.Scripts/install.sh
