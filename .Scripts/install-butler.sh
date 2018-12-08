@@ -4,7 +4,11 @@
 
 # -L follows redirects
 # -O specifies output name
-curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+if [ "$1" = "linux" ]; then
+    curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+else
+    curl -L -o butler.zip https://broth.itch.ovh/butler/darwin-amd64/LATEST/archive/default
+fi
 unzip butler.zip
 # GNU unzip tends to not set the executable bit even though it's set in the .zip
 chmod a+x ./butler

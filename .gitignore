@@ -40,7 +40,7 @@ sysinfo.txt
 # Crashlytics generated file
 Assets/StreamingAssets/crashlytics-build.properties
 
-butler.zip
-libc7zip.so
-7z.so
+butler*
+7z.*
 butler
+libc7zip.*
