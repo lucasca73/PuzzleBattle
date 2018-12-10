@@ -1,34 +1,43 @@
 sudo: required
 language: bash
+
 env:
   global:
   - IMAGE_NAME=gableroux/unity3d:2018.2.7f1
   - BUILD_NAME=PuzzleBattle
+
 services:
 - docker
+
 before_install:
 - openssl aes-256-cbc -K $encrypted_ac356ff71e5e_key -iv $encrypted_ac356ff71e5e_iv -in Unity_v2018.x.ulf.enc -out ./Unity_v2018.x.ulf -d
 - export UNITY_LICENSE_CONTENT=`cat Unity_v2018.x.ulf`
 - rm Unity_v2018.x.ulf
 - docker pull $IMAGE_NAME
 - sh .Scripts/install-butler.sh linux
+
 jobs:
   include:
   - stage: test
+    if: branch = master
     script: "chmod +x ./ci/docker_test.sh && ./ci/docker_test.sh"
     env: TEST_PLATFORM=editmode
     addons:
       artifacts:
         target_paths:
         - "$(pwd)/$TEST_PLATFORM-results.xml"
+
   - stage: test
+    if: branch = master
     script: "chmod +x ./ci/docker_test.sh && ./ci/docker_test.sh"
     env: TEST_PLATFORM=playmode
     addons:
       artifacts:
         target_paths:
         - "$(pwd)/$TEST_PLATFORM-results.xml"
+
   - stage: build
+    if: branch = master
     env: BUILD_TARGET=StandaloneLinux64
     script: "chmod +x ./ci/docker_build.sh && ./ci/docker_build.sh"
     addons:
@@ -36,8 +45,10 @@ jobs:
         target_paths:
         - "./Builds/"
     after_success:
-      - ./butler push ./Builds/StandaloneLinux64 lucascosta/puzzlebattle:linux-run
+      - ./butler push ./Builds/StandaloneLinux64 lucascosta/puzzlebattle:linux-run --userversion-file VERSION
+
   - stage: build
+    if: branch = master
     env: BUILD_TARGET=StandaloneOSX
     script: "chmod +x ./ci/docker_build.sh && ./ci/docker_build.sh"
     addons:
@@ -45,8 +56,10 @@ jobs:
         target_paths:
         - "./Builds/"
     after_success:
-      - ./butler push ./Builds/StandaloneOSX lucascosta/puzzlebattle:osx-run
+      - ./butler push ./Builds/StandaloneOSX lucascosta/puzzlebattle:osx-run --userversion-file VERSION
+
   - stage: build
+    if: branch = master
     env: BUILD_TARGET=StandaloneWindows64
     script: "chmod +x ./ci/docker_build.sh &&./ci/docker_build.sh"
     addons:
@@ -54,8 +67,10 @@ jobs:
         target_paths:
         - "./Builds/"
     after_success:
-      - ./butler push ./Builds/StandaloneWindows64 lucascosta/puzzlebattle:win-run
+      - ./butler push ./Builds/StandaloneWindows64 lucascosta/puzzlebattle:win-run --userversion-file VERSION
+
   - stage: build
+    if: branch = master
     env: BUILD_TARGET=WebGL
     script: "chmod +x ./ci/docker_build.sh && ./ci/docker_build.sh"
     addons:
@@ -63,4 +78,4 @@ jobs:
         target_paths:
         - "./Builds/"
     after_success:
-      - ./butler push ./Builds/WebGL lucascosta/puzzlebattle:webgl-run
+      - ./butler push ./Builds/WebGL lucascosta/puzzlebattle:webgl-run --userversion-file VERSION
