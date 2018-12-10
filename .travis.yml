@@ -11,7 +11,7 @@ before_install:
 - export UNITY_LICENSE_CONTENT=`cat Unity_v2018.x.ulf`
 - rm Unity_v2018.x.ulf
 - docker pull $IMAGE_NAME
-- sh .Scripts/install-butler.sh
+- sh .Scripts/install-butler.sh linux
 jobs:
   include:
   - stage: test
