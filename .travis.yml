@@ -11,6 +11,7 @@ before_install:
 - export UNITY_LICENSE_CONTENT=`cat Unity_v2018.x.ulf`
 - rm Unity_v2018.x.ulf
 - docker pull $IMAGE_NAME
+- sh .Scripts/install-butler.sh
 jobs:
   include:
   - stage: test
@@ -34,6 +35,8 @@ jobs:
       artifacts:
         target_paths:
         - "./Builds/"
+    after_success:
+      - ./butler push ./Builds/StandaloneLinux64 lucascosta/puzzlebattle:linux-run
   - stage: build
     env: BUILD_TARGET=StandaloneOSX
     script: "chmod +x ./ci/docker_build.sh && ./ci/docker_build.sh"
@@ -41,6 +44,8 @@ jobs:
       artifacts:
         target_paths:
         - "./Builds/"
+    after_success:
+      - ./butler push ./Builds/StandaloneOSX lucascosta/puzzlebattle:osx-run
   - stage: build
     env: BUILD_TARGET=StandaloneWindows64
     script: "chmod +x ./ci/docker_build.sh &&./ci/docker_build.sh"
@@ -48,6 +53,8 @@ jobs:
       artifacts:
         target_paths:
         - "./Builds/"
+    after_success:
+      - ./butler push ./Builds/StandaloneWindows64 lucascosta/puzzlebattle:win-run
   - stage: build
     env: BUILD_TARGET=WebGL
     script: "chmod +x ./ci/docker_build.sh && ./ci/docker_build.sh"
@@ -55,3 +62,5 @@ jobs:
       artifacts:
         target_paths:
         - "./Builds/"
+    after_success:
+      - ./butler push ./Builds/WebGL lucascosta/puzzlebattle:webgl-run
