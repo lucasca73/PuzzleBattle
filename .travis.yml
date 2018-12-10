@@ -1,22 +1,58 @@
+sudo: required
+language: bash
+env:
+  global:
+  - IMAGE_NAME=gableroux/unity3d:2018.2.7f1
+  - BUILD_NAME=ExampleProjectName
+services:
+- docker
+before_install:
+- openssl aes-256-cbc -K $encrypted_82766e747237_key -iv $encrypted_82766e747237_iv
+  -in Unity_v2018.x.ulf.enc -out ./Unity_v2018.x.ulf -d
+- export UNITY_LICENSE_CONTENT=`cat Unity_v2018.x.ulf`
+- rm Unity_v2018.x.ulf
+- docker pull $IMAGE_NAME
 jobs:
   include:
-    - stage: deploy
-      language: objective-c
-      osx_image: xcode8.3
-      if: branch = master
-      rvm:
-        - '2.2'
-
-      before_install:
-        - chmod a+x ./.Scripts/build.sh
-        - chmod a+x ./.Scripts/install.sh
-        - chmod a+x ./.Scripts/install-butler.sh
-        
-      install:
-        - ./.Scripts/install.sh
-        - ./.Scripts/install-butler.sh
-      script:
-        - ./.Scripts/build.sh
-        - ./butler push /Build/linux lucascosta/puzzlebattle:linux-stable
-        - ./butler push /Build/osx lucascosta/puzzlebattle:osx-stable
-        - ./butler push /Build/windows lucascosta/puzzlebattle:win-stable
+  - stage: test
+    script: "chmod +x ./ci/docker_test.sh && ./ci/docker_test.sh"
+    env: TEST_PLATFORM=editmode
+    addons:
+      artifacts:
+        target_paths:
+        - "$(pwd)/$TEST_PLATFORM-results.xml"
+  - stage: test
+    script: "chmod +x ./ci/docker_test.sh && ./ci/docker_test.sh"
+    env: TEST_PLATFORM=playmode
+    addons:
+      artifacts:
+        target_paths:
+        - "$(pwd)/$TEST_PLATFORM-results.xml"
+  - stage: build
+    env: BUILD_TARGET=StandaloneLinux64
+    script: "chmod +x ./ci/docker_build.sh && ./ci/docker_build.sh"
+    addons:
+      artifacts:
+        target_paths:
+        - "./Builds/"
+  - stage: build
+    env: BUILD_TARGET=StandaloneOSX
+    script: "chmod +x ./ci/docker_build.sh && ./ci/docker_build.sh"
+    addons:
+      artifacts:
+        target_paths:
+        - "./Builds/"
+  - stage: build
+    env: BUILD_TARGET=StandaloneWindows64
+    script: "chmod +x ./ci/docker_build.sh &&./ci/docker_build.sh"
+    addons:
+      artifacts:
+        target_paths:
+        - "./Builds/"
+  - stage: build
+    env: BUILD_TARGET=WebGL
+    script: "chmod +x ./ci/docker_build.sh && ./ci/docker_build.sh"
+    addons:
+      artifacts:
+        target_paths:
+        - "./Builds/"
