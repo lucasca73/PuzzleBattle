@@ -5,6 +5,7 @@ env:
   global:
   - IMAGE_NAME=gableroux/unity3d:2018.2.7f1
   - BUILD_NAME=PuzzleBattle
+  - ITCHIO_PROJECT=lucascosta/puzzlebattle
 
 services:
 - docker
@@ -45,7 +46,7 @@ jobs:
         target_paths:
         - "./Builds/"
     after_success:
-      - ./butler push ./Builds/StandaloneLinux64 lucascosta/puzzlebattle:linux-run --userversion-file VERSION
+      - ./butler push ./Builds/StandaloneLinux64 $ITCHIO_PROJECT:linux-run --userversion-file VERSION
 
   - stage: build
     if: branch = master
@@ -56,7 +57,7 @@ jobs:
         target_paths:
         - "./Builds/"
     after_success:
-      - ./butler push ./Builds/StandaloneOSX lucascosta/puzzlebattle:osx-run --userversion-file VERSION
+      - ./butler push ./Builds/StandaloneOSX $ITCHIO_PROJECT:osx-run --userversion-file VERSION
 
   - stage: build
     if: branch = master
@@ -67,7 +68,7 @@ jobs:
         target_paths:
         - "./Builds/"
     after_success:
-      - ./butler push ./Builds/StandaloneWindows64 lucascosta/puzzlebattle:win-run --userversion-file VERSION
+      - ./butler push ./Builds/StandaloneWindows64 $ITCHIO_PROJECT:win-run --userversion-file VERSION
 
   - stage: build
     if: branch = master
@@ -78,4 +79,4 @@ jobs:
         target_paths:
         - "./Builds/"
     after_success:
-      - ./butler push ./Builds/WebGL lucascosta/puzzlebattle:webgl-run --userversion-file VERSION
+      - ./butler push ./Builds/WebGL $ITCHIO_PROJECT:webgl-run --userversion-file VERSION
