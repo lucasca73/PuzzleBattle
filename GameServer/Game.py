@@ -103,13 +103,21 @@ class PlayerGame():
         
 
     def updateGravity(self):
-        for col in range(0, self.n_rows):
-            for row in range(0, self.n_cols):
+
+        later = []
+
+        for row in range(0, self.n_rows):
+            for col in range(0, self.n_cols):
                 if self.matrix[col][row] == 2:
                     if self.checkCell(col+1, row) == 1:
-                        self.matrix[col][row] = 0
-                        self.matrix[col+1][row] = 2
-                        return
+                        def getDown(col, row):
+                            self.matrix[col][row] = 0
+                            self.matrix[col+1][row] = 2
+                        later.append( (getDown, col, row) )
+
+        for laterUpt in later:
+            laterUpt[0](laterUpt[1],laterUpt[2])
+                        
 
     def showTerminal(self):
 
