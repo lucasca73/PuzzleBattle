@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+
+<html>
+   <head>
+
+      ws://192.168.25.3:8000
+      
+      <script type = "text/javascript">
+         function WebSocketTest() {
+            
+            if ("WebSocket" in window) {
+               // Let us open a web socket
+               var ws = new WebSocket("ws://192.168.25.3:8000");
+				
+               ws.onopen = function() {
+                  // Web Socket is connected, send data using send()
+                  // ws.send("left,50,1");
+                  alert("Message is sent...");
+               };
+				
+               ws.onmessage = function (evt) { 
+                  var received_msg = evt.data;
+                  alert(`${received_msg}`);
+               };
+				
+               ws.onclose = function() { 
+                  // websocket is closed.
+                  alert("Connection is closed...");
+               };
+            } else {
+              
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+         }
+         function InputLeft() {
+            
+            if ("WebSocket" in window) {
+               // Let us open a web socket
+               var ws = new WebSocket("ws://192.168.25.3:8000");
+				
+               ws.onopen = function() {
+                  // Web Socket is connected, send data using send()
+                  ws.send("input, 1, 2, 3, 4");
+               };
+				
+               ws.onmessage = function (evt) { 
+                  var received_msg = evt.data;
+                  ws.close();
+               };
+				
+               ws.onclose = function() { 
+               };
+            } else {
+              
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+         }
+         function TurnOffMat() {
+            
+            if ("WebSocket" in window) {
+               // Let us open a web socket
+               var ws = new WebSocket("ws://192.168.1.2:8000");
+				
+               ws.onopen = function() {
+                  // Web Socket is connected, send data using send()
+                  ws.send("turn-off-mat");
+               };
+               ws.onmessage = function (evt) { 
+                  var received_msg = evt.data;
+                  ws.close();
+               };
+            } else {
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+         }
+         function BothStop() {
+            if ("WebSocket" in window) {
+               // Let us open a web socket
+               var ws = new WebSocket("ws://192.168.1.2:8000");
+               ws.onopen = function() {
+                  // Web Socket is connected, send data using send()
+                  ws.send("left,0,1");
+                  ws.send("right,0,1");
+               };
+               ws.onmessage = function (evt) { 
+                  var received_msg = evt.data;
+                  ws.close();
+               };
+            } else {
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+         }
+         function BothBack() {
+            if ("WebSocket" in window) {
+               // Let us open a web socket
+               var ws = new WebSocket("ws://192.168.1.2:8000");
+               ws.onopen = function() {
+                  // Web Socket is connected, send data using send()
+                  ws.send("left,50,-1");
+                  ws.send("right,50,-1");
+               };
+               ws.onmessage = function (evt) { 
+                  var received_msg = evt.data;
+                  ws.close();
+               };
+            } else {
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+         }
+         function BothFront() {
+            if ("WebSocket" in window) {
+               // Let us open a web socket
+               var ws = new WebSocket("ws://192.168.1.2:8000");
+               ws.onopen = function() {
+                  // Web Socket is connected, send data using send()
+                  ws.send("left,50,1");
+                  ws.send("right,50,1");
+               };
+               ws.onmessage = function (evt) { 
+                  var received_msg = evt.data;
+                  ws.close();
+               };
+            } else {
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+         }
+      </script>
+   </head>
+   
+   <body>
+      <div id = "sse">
+         <a href = "javascript:WebSocketTest()">Run WebSocket</a>
+         <br>
+         <br>
+         <a href = "javascript:InputLeft()">Input left</a>
+         <br>
+         <!-- <br>
+         <a href = "javascript:TurnOffMat()">Desligar Esteira</a>
+         <br>
+         <br>
+         <a href = "javascript:BothFront()">Frente</a>
+         <br>
+         <br>
+         <a href = "javascript:BothBack()">Trás</a>
+         <br>
+         <br>
+         <a href = "javascript:BothStop()">Parar</a> -->
+      </div>
+      
+   </body>
+</html>

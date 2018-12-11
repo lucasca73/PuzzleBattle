@@ -1,17 +1,13 @@
-from server import WebsocketServer
+from websocket import WebsocketServer
+from Game import Game
 import sys
 from multiprocessing import Process
-import Queue
 import time
-import random
 
-
-def sendMessage(message):
-	print(message)
-	ws.websocket.send_message_to_all(message)
  
 if __name__ == '__main__':
     ws = WebsocketServer()
+    game = Game(ws)
 
     # handling new process
     p = Process(target=WebsocketServer.start, args = (ws,))
@@ -19,8 +15,12 @@ if __name__ == '__main__':
 
     print("\nThread is running async")
 
+    
+
+
     try:
         while True:
+            game.update()
             time.sleep(0.2)
     except KeyboardInterrupt:
         print('Keyboard interrupt')

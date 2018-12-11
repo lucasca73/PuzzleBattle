@@ -9,6 +9,10 @@ class WebsocketServer():
 		self.websocket.set_fn_new_client(self.new_client)
 		self.websocket.set_fn_client_left(self.client_left)
 		self.websocket.set_fn_message_received(self.message_received)
+
+		self.on_message = None
+		self.on_closed = None
+		self.on_enter = None
 		
 	def start(self):
 		try:
@@ -21,13 +25,16 @@ class WebsocketServer():
 	def new_client(self, client, server):
 		print("New client connected and was given id %d" % client['id'])
 		self.websocket.send_message_to_all("Hey all, a new client has joined us")
+		if self.on_enter != None:
+			self.on_enter(client)
 
 	# Called for every client disconnecting
 	def client_left(self, client, server):
 		print("Client(%d) disconnected" % client['id'])
+		if self.on_closed != None:
+			self.on_closed(client)
 
 	# Called when a client sends a message
 	def message_received(self, client, server, message):
-		array_message = message.split(',')
-		command = array_message[0]
-		print(array_message)
+		if self.on_message != None:
+			self.on_message(message, client)

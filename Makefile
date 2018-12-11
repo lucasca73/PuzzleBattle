@@ -10,5 +10,7 @@ unity:
 	docker run --rm -v `pwd`:/code -w /code -it build:unity sh
 
 server:
+	docker run --rm -p 8000:8000 -v `pwd`:/code -w /code/GameServer -it puzzle/server bash
+
+build-server:
 	docker build -t puzzle/server GameServer
-	docker run --rm -v `pwd`:/code -it puzzle/server bash
