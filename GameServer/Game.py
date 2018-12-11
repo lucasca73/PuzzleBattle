@@ -78,6 +78,7 @@ class PlayerGame():
         self.matrix = []
         self.n_rows = rows
         self.n_cols = cols
+        self.didLose = False
         
         self.it = 1
 
@@ -87,20 +88,27 @@ class PlayerGame():
         if self.it > 0:
             self.it -= 1
         else:
-            self.it = 20
+            self.it = 10
 
     def update(self):
-        time.sleep(0.5)
+        if self.didLose:
+            return
+        
+        self.updateGravity()
+
+        # time.sleep(0.5)
         self.placeholder()
 
+        # Create new piece/ check if lost
         if self.it == 0:
-            self.matrix[0][self.n_cols/2] = 2
+            if self.matrix[0][self.n_cols/2] == 1:
+                self.lose()
+            else:
+                self.matrix[0][self.n_cols/2] = 2
 
         for cols in self.matrix:
             for cell in cols:
                 pass
-        self.updateGravity()
-        
 
     def updateGravity(self):
 
@@ -119,6 +127,9 @@ class PlayerGame():
                     # grounding pieces in the bottom
                     if check == -1 and col+1 >= self.n_cols:
                         self.matrix[col][row] = 1
+                    
+                    if check == 2:
+                        self.matrix[col][row] = 1
 
         for laterUpt in later:
             laterUpt[0](laterUpt[1],laterUpt[2])
@@ -128,7 +139,10 @@ class PlayerGame():
 
     def showTerminal(self):
 
-        board = '\n\n\t- - - - - - - - -\n'
+        if self.didLose:
+            board = '\t -- YOU LOSE --\n\n\t- - - - - - - - -\n'
+        else:
+            board = '\n\n\t- - - - - - - - -\n'
         for row in self.matrix:
             board += self.printRow(row)
         
@@ -161,7 +175,7 @@ class PlayerGame():
             return -1 # cant move by boundaries
 
         if self.matrix[col][row] == 1:
-            result = 2 # this is a grounded piece 
+            result = 2 # this is a grounded piece
 
         return result
     
@@ -193,6 +207,9 @@ class PlayerGame():
             for set_row in range(0, self.n_cols):
                 self.matrix[set_col].append(0) # Adding row
 
+
+    def lose(self):
+        self.didLose = True
 
     def getJsonState(self):
         return {'game':1}
