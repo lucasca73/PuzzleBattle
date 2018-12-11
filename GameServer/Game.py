@@ -109,15 +109,22 @@ class PlayerGame():
         for row in range(0, self.n_rows):
             for col in range(0, self.n_cols):
                 if self.matrix[col][row] == 2:
-                    if self.checkCell(col+1, row) == 1:
+                    check = self.checkCell(col+1, row)
+                    if check == 1:
                         def getDown(col, row):
                             self.matrix[col][row] = 0
                             self.matrix[col+1][row] = 2
                         later.append( (getDown, col, row) )
+                    
+                    # grounding pieces in the bottom
+                    if check == -1 and col+1 >= self.n_cols:
+                        self.matrix[col][row] = 1
 
         for laterUpt in later:
             laterUpt[0](laterUpt[1],laterUpt[2])
-                        
+        
+
+        
 
     def showTerminal(self):
 
@@ -133,7 +140,13 @@ class PlayerGame():
     def printRow(self, row):
         rowStr = '\t|'
         for cell in row:
-            rowStr += ' ' if cell == 0 else '#'
+            if cell == 1:
+                rowStr += '@'
+            elif cell == 2:
+                rowStr += '#'
+            else:
+                rowStr += ' '
+            
 
         rowStr += '|\n'
         
