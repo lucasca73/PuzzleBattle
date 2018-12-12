@@ -80,16 +80,8 @@ class PlayerGame():
         self.n_cols = cols
         self.didLose = False
         self.currentPiece = (-1,-1)
-        
-        self.it = 1
 
         self.setupMatrix()
-
-    def placeholder(self):
-        if self.it > 0:
-            self.it -= 1
-        else:
-            self.it = 2
 
     def update(self):
         if self.didLose:
@@ -98,21 +90,13 @@ class PlayerGame():
         self.updateGravity()
 
         # time.sleep(0.5)
-        self.placeholder()
 
         # Create new piece/ check if lost
-        if self.it == 0:
+        if self.currentPiece[0] == -1:
             if self.matrix[0][self.n_cols/2] == 1:
                 self.lose()
             else:
-                self.currentPiece = (0,self.n_cols/2)
-                c = self.currentPiece[0]
-                r = self.currentPiece[1]
-                self.matrix[c][r] = 2
-
-        for cols in self.matrix:
-            for cell in cols:
-                pass
+                self.launchNewPiece()
 
     def updateGravity(self):
 
@@ -123,27 +107,18 @@ class PlayerGame():
                 if self.matrix[col][row] == 2:
                     check = self.checkCell(col+1, row)
                     if check == 1:
-                        def getDown(col, row):
-
-                            self.currentPiece = (col+1,row)
-                            c = self.currentPiece[0]
-                            r = self.currentPiece[1]
-
-                            # Move piece
-                            self.matrix[col][row] = 0
-                            self.matrix[c][r] = 2
-
-                        later.append( (getDown, col, row) )
+                        later.append( (self.moveCurrentPiece, 'down') )
                     
                     # grounding pieces in the bottom
                     if check == -1 and col+1 >= self.n_cols:
-                        self.matrix[col][row] = 1
+                        self.groundCurrentPiece()
                     
+                    # grounding pieces when touching other pieces
                     if check == 2:
-                        self.matrix[col][row] = 1
+                        self.groundCurrentPiece()
 
         for laterUpt in later:
-            laterUpt[0](laterUpt[1],laterUpt[2])
+            laterUpt[0](laterUpt[1])
 
 
     def showTerminal(self):
@@ -221,7 +196,41 @@ class PlayerGame():
         self.didLose = True
 
     def moveCurrentPiece(self, move):
+
+        c = self.currentPiece[0]
+        r = self.currentPiece[1]
+
+        if move == 'up':
+            self.currentPiece = (c-1,r)
+        elif move == 'down':
+            self.currentPiece = (c+1,r)
+        elif move == 'left':
+            self.currentPiece = (c,r-1)
+        elif move == 'right':
+            self.currentPiece = (c,r+1)
+        else:
+            pass
+        
+        new_c = self.currentPiece[0]
+        new_r = self.currentPiece[1]
+
+        # Move piece
+        self.matrix[c][r] = 0
+        self.matrix[new_c][new_r] = 2
         pass
+
+    def groundCurrentPiece(self):
+        c = self.currentPiece[0]
+        r = self.currentPiece[1]
+        self.matrix[c][r] = 1
+        self.currentPiece = (-1,-1)
+
+    def launchNewPiece(self):
+        self.currentPiece = (0,self.n_cols/2)
+        c = self.currentPiece[0]
+        r = self.currentPiece[1]
+        self.matrix[c][r] = 2
+
 
     def getJsonState(self):
         return {'game':1}
