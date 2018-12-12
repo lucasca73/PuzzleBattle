@@ -79,6 +79,7 @@ class PlayerGame():
         self.n_rows = rows
         self.n_cols = cols
         self.didLose = False
+        self.currentPiece = (-1,-1)
         
         self.it = 1
 
@@ -88,7 +89,7 @@ class PlayerGame():
         if self.it > 0:
             self.it -= 1
         else:
-            self.it = 10
+            self.it = 2
 
     def update(self):
         if self.didLose:
@@ -104,7 +105,10 @@ class PlayerGame():
             if self.matrix[0][self.n_cols/2] == 1:
                 self.lose()
             else:
-                self.matrix[0][self.n_cols/2] = 2
+                self.currentPiece = (0,self.n_cols/2)
+                c = self.currentPiece[0]
+                r = self.currentPiece[1]
+                self.matrix[c][r] = 2
 
         for cols in self.matrix:
             for cell in cols:
@@ -120,8 +124,15 @@ class PlayerGame():
                     check = self.checkCell(col+1, row)
                     if check == 1:
                         def getDown(col, row):
+
+                            self.currentPiece = (col+1,row)
+                            c = self.currentPiece[0]
+                            r = self.currentPiece[1]
+
+                            # Move piece
                             self.matrix[col][row] = 0
-                            self.matrix[col+1][row] = 2
+                            self.matrix[c][r] = 2
+
                         later.append( (getDown, col, row) )
                     
                     # grounding pieces in the bottom
@@ -133,14 +144,12 @@ class PlayerGame():
 
         for laterUpt in later:
             laterUpt[0](laterUpt[1],laterUpt[2])
-        
 
-        
 
     def showTerminal(self):
 
         if self.didLose:
-            board = '\t -- YOU LOSE --\n\n\t- - - - - - - - -\n'
+            board = '\t  -- YOU LOSE --\n\n\t- - - - - - - - -\n'
         else:
             board = '\n\n\t- - - - - - - - -\n'
         for row in self.matrix:
@@ -210,6 +219,9 @@ class PlayerGame():
 
     def lose(self):
         self.didLose = True
+
+    def moveCurrentPiece(self, move):
+        pass
 
     def getJsonState(self):
         return {'game':1}
