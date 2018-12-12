@@ -5,7 +5,6 @@ import time
 def clearScreen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-
 class Game():
     def __init__(self, ws):
         self.ws = ws
@@ -81,6 +80,8 @@ class PlayerGame():
         self.didLose = False
         self.currentPiece = (-1,-1)
 
+        self.it = 5
+
         self.setupMatrix()
 
     def update(self):
@@ -90,6 +91,12 @@ class PlayerGame():
         self.updateGravity()
 
         # time.sleep(0.5)
+
+        self.it -= 1
+        if self.it < 0:
+            self.moveCurrentPiece('left')
+            self.it = 5
+
 
         # Create new piece/ check if lost
         if self.currentPiece[0] == -1:
@@ -197,19 +204,26 @@ class PlayerGame():
 
     def moveCurrentPiece(self, move):
 
+        if self.currentPiece[0] == -1:
+            return
+
         c = self.currentPiece[0]
         r = self.currentPiece[1]
 
         if move == 'up':
-            self.currentPiece = (c-1,r)
+            new_pos = (c-1,r)
         elif move == 'down':
-            self.currentPiece = (c+1,r)
+            new_pos = (c+1,r)
         elif move == 'left':
-            self.currentPiece = (c,r-1)
+            new_pos = (c,r-1)
         elif move == 'right':
-            self.currentPiece = (c,r+1)
+            new_pos = (c,r+1)
         else:
-            pass
+            return
+
+        # Check if can move
+        if self.checkCell(new_pos[0], new_pos[1]) == 1:
+            self.currentPiece = new_pos
         
         new_c = self.currentPiece[0]
         new_r = self.currentPiece[1]
