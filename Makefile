@@ -14,3 +14,6 @@ server:
 
 build-server:
 	docker build -t puzzle/server GameServer
+
+joystick:
+	docker run --rm -p 3000:3000 -v `pwd`:/code -w /code/joystickServer/joystick-server -it node:10-alpine sh
