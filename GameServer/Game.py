@@ -5,12 +5,13 @@ import time
 def clearScreen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
 class Game():
     def __init__(self, ws):
         self.ws = ws
         self.handler = MessageHandler()
         self.playersGame = []
-        
+
         self.player = PlayerGame(1)
 
         self.ws.on_message = self.handler.handleMessage
@@ -26,6 +27,8 @@ class Game():
     def update(self):
         # for p_game in self.playersGame:
         #     p_game.update()
+
+        # print(inputBuffer)
 
         self.player.update()
         self.player.showTerminal()
@@ -46,10 +49,13 @@ class Game():
         pass
 
     def checkState(self, array_msg):
-        print('check: ' + array_msg[0])
+        # print('check: ' + array_msg[0])
+        pass
 
     def playerInput(self, array_msg):
-        print('input: ' + array_msg[0])
+        # print('input: ' + array_msg[1])
+        self.player.inputBuffer.append( str(array_msg[1]) ) 
+        # print(self.player.inputBuffer)
 
 class MessageHandler():
     
@@ -79,6 +85,7 @@ class PlayerGame():
         self.n_cols = cols
         self.didLose = False
         self.currentPiece = (-1,-1)
+        self.inputBuffer = []
 
         self.it = 5
 
@@ -90,12 +97,16 @@ class PlayerGame():
         
         self.updateGravity()
 
+        if len(self.inputBuffer) > 0:
+            move = self.inputBuffer.pop()
+            self.moveCurrentPiece(move)
+
         # time.sleep(0.5)
 
-        self.it -= 1
-        if self.it < 0:
-            self.moveCurrentPiece('left')
-            self.it = 5
+        # self.it -= 1
+        # if self.it < 0:
+        #     self.moveCurrentPiece('left')
+        #     self.it = 5
 
 
         # Create new piece/ check if lost
@@ -231,6 +242,7 @@ class PlayerGame():
         # Move piece
         self.matrix[c][r] = 0
         self.matrix[new_c][new_r] = 2
+
         pass
 
     def groundCurrentPiece(self):

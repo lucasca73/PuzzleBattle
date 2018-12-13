@@ -1,7 +1,8 @@
 from websocket import WebsocketServer
-from Game import Game
+from Game import *
 import sys
 from multiprocessing import Process
+import threading
 import time
 
  
@@ -10,12 +11,11 @@ if __name__ == '__main__':
     game = Game(ws)
 
     # handling new process
-    p = Process(target=WebsocketServer.start, args = (ws,))
-    p.start()
+    t = threading.Thread(target=WebsocketServer.start, args = (ws,))
+    t.daemon = True
+    t.start()
 
     print("\nThread is running async")
-
-    
 
 
     try:
@@ -23,6 +23,5 @@ if __name__ == '__main__':
             game.update()
             time.sleep(0.2)
     except KeyboardInterrupt:
-        print('Keyboard interrupt')
-        p.terminate()
+        print('\nEnding server\n')
         sys.exit(0)
