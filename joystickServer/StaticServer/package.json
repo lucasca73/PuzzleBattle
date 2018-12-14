@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "connect": "^3.6.6",
+    "express": "^4.16.4",
+    "jade": "^1.11.0",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.9.2",
+    "serve-static": "^1.13.2",
+    "stylus": "^0.54.5"
+  },
+  "name": "staticserver",
+  "version": "1.0.0",
+  "main": "main.js",
+  "devDependencies": {},
+  "scripts": {
+    "build-css": "stylus source/stylesheets/index.styl -o static/css",
+    "watch-css": "stylus source/stylesheets/index.styl -o static/css -w",
+    "clean": "rm -rf static/css && mkdir -p static/css",
+    "build": "npm run clean && npm run build-css",
+    "watch": "npm run clean && npm run watch-css & nodemon server -e js,jade",
+    "start": "node server"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

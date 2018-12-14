@@ -94,8 +94,6 @@ class PlayerGame():
     def update(self):
         if self.didLose:
             return
-        
-        self.updateGravity()
 
         if len(self.inputBuffer) > 0:
             move = self.inputBuffer.pop()
@@ -103,10 +101,10 @@ class PlayerGame():
 
         # time.sleep(0.5)
 
-        # self.it -= 1
-        # if self.it < 0:
-        #     self.moveCurrentPiece('left')
-        #     self.it = 5
+        self.it -= 1
+        if self.it < 0:
+            self.updateGravity()
+            self.it = 5
 
 
         # Create new piece/ check if lost

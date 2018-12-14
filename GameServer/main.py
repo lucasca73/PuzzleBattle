@@ -21,7 +21,7 @@ if __name__ == '__main__':
     try:
         while True:
             game.update()
-            time.sleep(0.2)
+            time.sleep(0.1)
     except KeyboardInterrupt:
         print('\nEnding server\n')
         sys.exit(0)
